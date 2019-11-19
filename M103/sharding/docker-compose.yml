@@ -1,0 +1,31 @@
+version: '2.3'
+networks:
+  private_network:
+    ipam:
+      config:
+        - subnet: 192.168.103.0/24
+services:
+  mongo:
+    build:
+      context: ./
+    networks:
+      private_network:
+        ipv4_address: 192.168.103.100
+    command: /tmp/initScript.bash
+    ports:
+      - "26000-26003:26000-26003"
+      - "27001-27006:27001-27006"
+    volumes:
+      - ./labs_data/csrs_1.conf:/data/csrs_1.conf
+      - ./labs_data/csrs_2.conf:/data/csrs_2.conf
+      - ./labs_data/csrs_3.conf:/data/csrs_3.conf
+      - ./labs_data/mongos.conf:/data/mongos.conf
+      - ./labs_data/mongod-repl-1.conf:/data/mongod-repl-1.conf
+      - ./labs_data/mongod-repl-2.conf:/data/mongod-repl-2.conf
+      - ./labs_data/mongod-repl-3.conf:/data/mongod-repl-3.conf
+      - ./labs_data/mongod-repl-4.conf:/data/mongod-repl-4.conf
+      - ./labs_data/mongod-repl-5.conf:/data/mongod-repl-5.conf
+      - ./labs_data/mongod-repl-6.conf:/data/mongod-repl-6.conf
+    mem_limit: 2048000000
+    extra_hosts:
+      - "m103:192.168.103.100"

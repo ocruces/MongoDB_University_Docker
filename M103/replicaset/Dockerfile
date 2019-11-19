@@ -17,12 +17,28 @@ RUN mkdir -m777 /var/mongodb \
     &&  curl -s https://s3.amazonaws.com/edu-static.mongodb.com/lessons/M103/m103_validation.tgz -o m103_validation.tgz \
     &&  tar -xzvf m103_validation.tgz -C /var/m103/validation \
     &&  rm -rf m103_validation.tgz
-# Allow vagrant user to write in log directory
-RUN chmod 777 /var/log/mongodb
-RUN chmod 777 /var/mongodb/db
-RUN groupadd -r vagrant && useradd --no-log-init -r -g vagrant vagrant
-USER vagrant
-#USER mongodb
 
-# For starting with fork enabled
+# Give vagrant user write permissions
+RUN chmod 777 /var/mongodb/db
+
+# Add group and user vagrant
+RUN groupadd -r vagrant && useradd --no-log-init -r -g vagrant vagrant
+
+# Create key directory and key
+RUN mkdir -p /var/mongodb/pki \
+    && chown vagrant:vagrant -R /var/mongodb 
+
+# Start using vagrant user
+USER vagrant
+
+# Generate keyfile
+RUN openssl rand -base64 741 > /var/mongodb/pki/m103-keyfile \
+	&& chmod 600 /var/mongodb/pki/m103-keyfile
+
+# Create replica sets direcotries
+RUN mkdir /var/mongodb/db/1 \
+    && mkdir /var/mongodb/db/2 \
+	&& mkdir /var/mongodb/db/3
+
+# For starting with fork enabled run an scripts that starts mongo servers and slepps for one year
 ADD --chown=vagrant:vagrant initScript.bash /tmp/initScript.bash

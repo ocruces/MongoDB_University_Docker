@@ -1,0 +1,23 @@
+version: '2.3'
+networks:
+  private_network:
+    ipam:
+      config:
+        - subnet: 192.168.103.0/24
+services:
+  mongo:
+    build:
+      context: ./
+    networks:
+      private_network:
+        ipv4_address: 192.168.103.100
+    command: /tmp/initScript.bash
+    ports:
+      - "27000:27000"
+    volumes:
+      - ./labs_data/mongod-repl-1.conf:/data/mongod-repl-1.conf
+      - ./labs_data/mongod-repl-2.conf:/data/mongod-repl-2.conf
+      - ./labs_data/mongod-repl-3.conf:/data/mongod-repl-3.conf
+    mem_limit: 1024000000
+    extra_hosts:
+      - "m103:192.168.103.100"

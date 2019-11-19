@@ -11,7 +11,14 @@ services:
     networks:
       private_network:
         ipv4_address: 192.168.103.100
-    command: mongod -f /data/mongod.conf  #   manage this command to your purposes
+#    command: mongod --port 27000 --bind_ip 127.0.0.1,192.168.103.100 --dbpath /data/db/ --auth
+#    command: mongod --bind_ip "127.0.0.1,192.168.103.100" -f /data/mongod.conf  #   manage this command to your purposes
+    command: /tmp/initScript.bash
+#    environment:
+#      MONGO_INITDB_ROOT_USERNAME: m103-admin
+#      MONGO_INITDB_ROOT_PASSWORD: m103-pass
+    ports:
+      - "27000:27000"
     volumes:
       - ./labs_data/mongod.conf:/data/mongod.conf
     mem_limit: 1024000000
